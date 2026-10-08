@@ -30,8 +30,8 @@ Las pruebas de `test/` no necesitan red ni Supabase: usan un repositorio en memo
    ```
 
 Las políticas RLS requieren una sesión autenticada y que la reserva pertenezca al
-usuario autenticado. La pantalla todavía no incluye un flujo de inicio de sesión;
-por eso, las escrituras serán rechazadas hasta que se implemente autenticación.
+usuario autenticado. Esta app asume que el inicio de sesión se realiza fuera de este
+repositorio, como se indica en el encargo.
 
 ## Estructura
 

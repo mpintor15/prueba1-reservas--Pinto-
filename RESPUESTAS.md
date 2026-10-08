@@ -9,4 +9,4 @@ La versión inicial tenía una clave literal con rol `service_role` (`lib/data/s
 
 ## ¿La regla protege la app real?
 
-La pantalla ahora envía la solicitud a `CrearReserva` (`lib/presentation/reserva_page.dart:67-77`), que consulta las reservas existentes y rechaza solapamientos (`lib/domain/crear_reserva.dart:14-25`). La migración aún no define una restricción de solapamiento en la base de datos (`supabase/migracion.sql:4-12`), así que una inserción directa podría evitar la regla del dominio. Además, falta el flujo de inicio de sesión y RLS rechazará escrituras hasta implementarlo (`README.md:32-34`).
+La pantalla ahora envía la solicitud a `CrearReserva` (`lib/presentation/reserva_page.dart:67-77`), que consulta las reservas existentes y rechaza solapamientos (`lib/domain/crear_reserva.dart:16-25`). La migración aún no define una restricción de solapamiento en la base de datos (`supabase/migracion.sql:4-12`), así que una inserción directa podría evitar la regla del dominio. La app asume que la sesión autenticada llega desde fuera de este repositorio (`README.md:32-34`).

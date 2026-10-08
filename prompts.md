@@ -23,3 +23,27 @@ Está bien; haz el primer commit (Recomendado)
 ## 6
 
 Sí, crea el commit de pruebas (Recomendado)
+
+## 7
+
+Déjalos listos para que los suba yo (Recomendado)
+
+## 8
+
+Ok, entonces está listo para subir?
+
+## 9
+
+Hay alguna manera de correr la app para ver que funciona?
+
+## 10
+
+Qué recomiendas hacer con el service_role?
+
+## 11
+
+Ok, puedes hacerlo tú?
+
+## 12
+
+Ok, última auditoría para subir.
