@@ -13,12 +13,18 @@ create table if not exists public.reservas (
 
 alter table public.reservas enable row level security;
 
+revoke all on public.reservas from anon, authenticated;
+grant select (id, sala_id, inicio, fin) on public.reservas to authenticated;
+grant insert on public.reservas to authenticated;
+
+drop policy if exists "ver reservas" on public.reservas;
 create policy "ver reservas"
   on public.reservas for select
   to authenticated
   using (true);
 
+drop policy if exists "crear reservas" on public.reservas;
 create policy "crear reservas"
   on public.reservas for insert
   to authenticated
-  with check (true);
+  with check ((select auth.uid()) = usuario_id);
