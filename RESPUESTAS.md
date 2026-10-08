@@ -5,10 +5,8 @@ Elegí cruces parciales en ambos sentidos y una solicitud que contiene una reser
 
 ## Riesgo más grave del repositorio
 
-La configuración versionada contiene una clave literal con rol `service_role`
-(`lib/data/supabase_config.dart:3-4`), y el README recomienda usar ese tipo de clave
-(`README.md:18-20`). `lib/main.dart:11` pasa la clave a Supabase desde la app. Si corresponde a un proyecto real, la clave privilegiada está expuesta y debe rotarse. Además, las políticas dejan que cualquier usuario autenticado lea todas las reservas (`supabase/migracion.sql:16-19`) y permite inserciones con `with check (true)` (`supabase/migracion.sql:21-24`); `usuario_id` solo referencia una fila de `auth.users` (`supabase/migracion.sql:7`), sin vincularla al usuario actual.
+La versión inicial tenía una clave literal con rol `service_role` (`lib/data/supabase_config.dart:3-4`, versión inicial). La configuración actual recibe una clave publishable al compilar (`lib/data/supabase_config.dart:1-3`) y el README prohíbe poner claves privilegiadas en Flutter y pide desactivar cualquier clave real expuesta (`README.md:19-23`). Las políticas actuales limitan la lectura a columnas necesarias para disponibilidad y verifican que `usuario_id` coincida con `auth.uid()` al insertar (`supabase/migracion.sql:16-30`).
 
 ## ¿La regla protege la app real?
 
-Todavía no: la pantalla inserta directamente en Supabase (`lib/presentation/reserva_page.dart:58-65`), aunque `lib/main.dart:13-14` construya `CrearReserva` y `lib/main.dart:26` la entregue a la página. La tabla solo valida que el fin sea posterior al inicio (`supabase/migracion.sql:4-12`); no declara una restricción contra solapamientos. Por eso, una inserción directa puede evitar la regla del dominio.
+La pantalla ahora envía la solicitud a `CrearReserva` (`lib/presentation/reserva_page.dart:67-77`), que consulta las reservas existentes y rechaza solapamientos (`lib/domain/crear_reserva.dart:14-25`). La migración aún no define una restricción de solapamiento en la base de datos (`supabase/migracion.sql:4-12`), así que una inserción directa podría evitar la regla del dominio. Además, falta el flujo de inicio de sesión y RLS rechazará escrituras hasta implementarlo (`README.md:32-34`).

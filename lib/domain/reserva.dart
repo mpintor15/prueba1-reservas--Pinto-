@@ -9,7 +9,7 @@ class Reserva {
 
   final String id;
   final String salaId;
-  final String usuarioId;
+  final String? usuarioId;
   final DateTime inicio;
   final DateTime fin;
 }

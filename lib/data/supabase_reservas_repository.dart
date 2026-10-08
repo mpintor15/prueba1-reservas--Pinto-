@@ -10,7 +10,10 @@ class SupabaseReservasRepository implements ReservasRepository {
 
   @override
   Future<List<Reserva>> reservasDeSala(String salaId) async {
-    final filas = await cliente.from('reservas').select().eq('sala_id', salaId);
+    final filas = await cliente
+        .from('reservas')
+        .select('id, sala_id, inicio, fin')
+        .eq('sala_id', salaId);
     return filas.map(_aReserva).toList();
   }
 
@@ -24,15 +27,15 @@ class SupabaseReservasRepository implements ReservasRepository {
           'inicio': solicitud.inicio.toUtc().toIso8601String(),
           'fin': solicitud.fin.toUtc().toIso8601String(),
         })
-        .select()
+        .select('id, sala_id, inicio, fin')
         .single();
-    return _aReserva(fila);
+    return _aReserva(fila, usuarioId: solicitud.usuarioId);
   }
 
-  Reserva _aReserva(Map<String, dynamic> fila) => Reserva(
+  Reserva _aReserva(Map<String, dynamic> fila, {String? usuarioId}) => Reserva(
         id: fila['id'] as String,
         salaId: fila['sala_id'] as String,
-        usuarioId: fila['usuario_id'] as String,
+        usuarioId: usuarioId,
         inicio: DateTime.parse(fila['inicio'] as String),
         fin: DateTime.parse(fila['fin'] as String),
       );

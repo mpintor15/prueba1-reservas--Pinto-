@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../domain/crear_reserva.dart';
+import '../domain/reserva.dart';
 
 class ReservaPage extends StatefulWidget {
   const ReservaPage({super.key, required this.crearReserva});
@@ -57,13 +58,23 @@ class _ReservaPageState extends State<ReservaPage> {
 
   Future<void> _reservar() async {
     try {
-      await Supabase.instance.client.from('reservas').insert({
-        'sala_id': _sala,
-        'usuario_id': _usuarioController.text,
-        'inicio': _hoyA(_inicio).toUtc().toIso8601String(),
-        'fin': _hoyA(_fin).toUtc().toIso8601String(),
-      });
-      setState(() => _mensaje = 'Reserva creada');
+      final usuarioId = Supabase.instance.client.auth.currentUser?.id;
+      if (usuarioId == null) {
+        setState(() => _mensaje = 'Inicia sesión para reservar');
+        return;
+      }
+
+      final resultado = await widget.crearReserva(
+        SolicitudReserva(
+          salaId: _sala,
+          usuarioId: usuarioId,
+          inicio: _hoyA(_inicio),
+          fin: _hoyA(_fin),
+        ),
+      );
+      setState(() => _mensaje = resultado.aceptada
+          ? 'Reserva creada'
+          : resultado.mensaje);
     } on PostgrestException catch (e) {
       setState(() => _mensaje = 'No se pudo reservar: ${e.message}');
     }
@@ -87,6 +98,7 @@ class _ReservaPageState extends State<ReservaPage> {
             ),
             TextField(
               controller: _usuarioController,
+              readOnly: true,
               decoration: const InputDecoration(labelText: 'ID de usuario'),
             ),
             ListTile(

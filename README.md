@@ -16,9 +16,22 @@ Las pruebas de `test/` no necesitan red ni Supabase: usan un repositorio en memo
 ## Correr la app
 
 1. Crea un proyecto en Supabase y ejecuta `supabase/migracion.sql` en el SQL Editor.
-2. Copia la URL y la clave del proyecto en `lib/data/supabase_config.dart`.
-   Usamos la clave `service_role` para no pelear con los permisos mientras desarrollamos.
-3. `flutter run`
+2. Copia la URL del proyecto y su clave publishable desde **Settings → API Keys**.
+   La app Flutter solo debe usar la clave publishable. Nunca pongas una clave
+   `service_role` o `secret` en una app móvil o web.
+3. Si una clave `service_role` real ya se publicó en Git o en un bundle, desactívala
+   en Supabase; quitarla del código no la revoca.
+4. Inicia la app pasando esos valores en tiempo de compilación:
+
+   ```bash
+   flutter run \
+     --dart-define=SUPABASE_URL=https://YOUR_PROJECT_REF.supabase.co \
+     --dart-define=SUPABASE_PUBLISHABLE_KEY=sb_publishable_your_key
+   ```
+
+Las políticas RLS requieren una sesión autenticada y que la reserva pertenezca al
+usuario autenticado. La pantalla todavía no incluye un flujo de inicio de sesión;
+por eso, las escrituras serán rechazadas hasta que se implemente autenticación.
 
 ## Estructura
 
